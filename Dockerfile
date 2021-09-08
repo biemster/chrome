@@ -1,7 +1,8 @@
-FROM ubuntu:18.04
+#FROM ubuntu:18.04
+FROM ubuntu:latest
 
 LABEL maintainer="Tomohisa Kusano <siomiz@gmail.com>"
-
+ARG DEBIAN_FRONTEND=noninteractive
 ENV VNC_SCREEN_SIZE 1024x768
 
 COPY copyables /
@@ -18,12 +19,10 @@ RUN apt-get update \
 
 ADD https://dl.google.com/linux/linux_signing_key.pub \
 	https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-	https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb \
 	/tmp/
 
 RUN apt-key add /tmp/linux_signing_key.pub \
 	&& dpkg -i /tmp/google-chrome-stable_current_amd64.deb \
-	|| dpkg -i /tmp/chrome-remote-desktop_current_amd64.deb \
 	|| apt-get -f --yes install
 
 RUN apt-get clean \
@@ -32,7 +31,6 @@ RUN apt-get clean \
 	&& usermod -s /bin/bash chrome \
 	&& ln -s /crdonly /usr/local/sbin/crdonly \
 	&& ln -s /update /usr/local/sbin/update \
-	&& mkdir -p /home/chrome/.config/chrome-remote-desktop \
 	&& mkdir -p /home/chrome/.fluxbox \
 	&& echo ' \n\
 		session.screen0.toolbar.visible:        false\n\
